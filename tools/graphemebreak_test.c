@@ -10,7 +10,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-int main(int argc, char *argv[])
+#if defined (BUILD_MONOLITHIC)
+#define main unibreak_grapheme_break_main
+#endif
+
+int main(int argc, const char **argv)
 {
     const char *lang = "";
     const char *text;
@@ -21,7 +25,7 @@ int main(int argc, char *argv[])
     if (argc != 2)
     {
         printf("Usage: %s <text>\n", argv[0]);
-        exit(1);
+        return 1;
     }
 
     text = argv[1];

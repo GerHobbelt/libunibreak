@@ -1,5 +1,3 @@
-/* vim: set expandtab softtabstop=4 shiftwidth=4: */
-
 /*
  * Show possible linebreak points in a UTF-8 sequence.
  *
@@ -24,7 +22,7 @@
 #define MAXCHARS    16384
 
 /* Show usage */
-void usage(const char *progname)
+static void usage(const char *progname)
 {
     fprintf(stderr,
 "Usage: %s [-l en/de/es/fr/ru/zh] [-t output_encoding] input_utf8_file\n",
@@ -32,7 +30,7 @@ void usage(const char *progname)
 }
 
 /* Simplistic function to output a maximum four-byte sequence. */
-void putchar_utf8(utf32_t ch)
+static void putchar_utf8(utf32_t ch)
 {
     if (ch < 0x80)
         putchar(ch);
@@ -57,7 +55,7 @@ void putchar_utf8(utf32_t ch)
 }
 
 /* Output a UTF-8 character via libiconv */
-void putchar_iconv(iconv_t ic, const char* buf, size_t count)
+static void putchar_iconv(iconv_t ic, const char* buf, size_t count)
 {
     char outbuf[5];
     char *inp;
@@ -100,7 +98,7 @@ void putchar_iconv(iconv_t ic, const char* buf, size_t count)
 }
 
 /* Get the byte length of a UTF-8 sequence */
-size_t get_utf8_char_len(char lead)
+static size_t get_utf8_char_len(char lead)
 {
     unsigned char ch = (unsigned char)lead;
     if (ch < 0xC2 || ch > 0xF4) {
@@ -119,7 +117,7 @@ size_t get_utf8_char_len(char lead)
 }
 
 /* Output a UTF-8 string via libiconv */
-void puts_iconv(const char *s, iconv_t ic)
+static void puts_iconv(const char *s, iconv_t ic)
 {
     unsigned char ch;
     while ( (ch = (unsigned char)*s)) {
@@ -129,7 +127,11 @@ void puts_iconv(const char *s, iconv_t ic)
     }
 }
 
-int main(int argc, char *argv[])
+#if defined (BUILD_MONOLITHIC)
+#define main   unibreak_line_break_main
+#endif
+
+int main(int argc, const char **argv)
 {
     utf8_t buffer[MAXCHARS];
     char brks[MAXCHARS];
@@ -149,13 +151,13 @@ int main(int argc, char *argv[])
             strcmp(argv[i], "-t") != 0)
         {
             fprintf(stderr, "Invalid option: `%s'\n", argv[i]);
-            exit(1);
+            return 1;
         }
         j = i + 1;
         if (j >= argc)
         {
             fprintf(stderr, "Option value missing\n");
-            exit(1);
+            return 1;
         }
         switch (argv[i][1])
         {
@@ -178,14 +180,14 @@ int main(int argc, char *argv[])
     if (i + 1 != argc)
     {
         usage(argv[0]);
-        exit(1);
+        return 1;
     }
 
     /* Read the input file up to MAXCHARS bytes */
     if ( (fp = fopen(argv[i], "rb")) == NULL)
     {
         perror("Cannot open file");
-        exit(1);
+        return 1;
     }
     count = fread(buffer, sizeof(utf8_t), MAXCHARS, fp);
     fclose(fp);
