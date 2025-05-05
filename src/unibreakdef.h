@@ -36,9 +36,11 @@
 #define UNIBREAKDEF_H
 
 #if defined(_MSC_VER) && _MSC_VER < 1800
+#ifndef __cplusplus
 typedef int bool;
 #define false 0
 #define true 1
+#endif
 #else
 #include <stdbool.h>
 #endif
