@@ -5,6 +5,8 @@
 # Date: 2023-07-28, 13:19:22 GMT [KW]
 */
 
+#ifdef IMPLEMENT_EAST_ASIAN
+
 #include "eastasianwidthdef.h"
 
 static const struct EastAsianWidthProperties eaw_prop[] = {
@@ -331,3 +333,5 @@ bool ub_is_op_east_asian(utf32_t ch) {
         || (ch >= 0x3008 && ch <= 0xFD3F)
         || (ch >= 0xFE17 && ch <= 0x13258);
 }
+
+#endif // IMPLEMENT_EAST_ASIAN

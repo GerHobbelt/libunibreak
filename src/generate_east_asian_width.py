@@ -60,13 +60,17 @@ def main():
     print(leading_comment_2, end='')
     print('*/')
     print()
+    print('#ifdef IMPLEMENT_EAST_ASIAN')
+    print()
     print('#include "eastasianwidthdef.h"')
     print()
     output_east_asian_width_data(east_asian_width_properties, skip='N')
     print()
     output_is_op_east_asian_function(line_break_properties,
                                      east_asian_width_properties)
-
+    print()
+    print('#endif // IMPLEMENT_EAST_ASIAN')
+    print()
 
 if __name__ == '__main__':
     main()

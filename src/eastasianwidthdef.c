@@ -22,6 +22,7 @@
  */
 
 #include "eastasianwidthdef.h"
+#define IMPLEMENT_EAST_ASIAN
 #include "eastasianwidthdata.c"
 #include "unibreakdef.h"
 
